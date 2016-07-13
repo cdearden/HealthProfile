@@ -16,23 +16,50 @@ public class HealthProfile {
     MALE, FEMALE
   };
 
+  /**
+   * Patient information.
+   */
   private String firstName;
   private String lastName;
   private Gender gender;
   private LocalDate dateOfBirth;
-  
+
   /**
    * Person's height in inches.
    */
   private double height;
-  
+
   /**
    * Person's weight in pounds.
    */
   private double weight;
 
+  public HealthProfile() {
+  }
+
+  /**
+   * @throws IllegalArgumentException if the first name is an empty string, the last name is an 
+   * empty string, the birth date is before today, the height is less than zero or the weight is 
+   * less than zero
+   */
   public HealthProfile(String firstName, String lastName, Gender gender, LocalDate dateOfBirth,
-      double height, double weight) {
+      double height, double weight) throws IllegalArgumentException {
+    if(firstName.equals("")) {
+      throw new IllegalArgumentException("Must enter a name.");
+    }
+    if(lastName.equals("")) {
+      throw new IllegalArgumentException("Must enter a name.");
+    }
+    if (Period.between(dateOfBirth, LocalDate.now()).isNegative()) {
+      throw new IllegalArgumentException("Birthdate must be on or before today's date.");
+    }
+    if (height < 0) {
+      throw new IllegalArgumentException("Height must be greater than zero.");
+    }
+    if (weight < 0) {
+      throw new IllegalArgumentException("Weight must be greater than zero");
+    }
+
     this.firstName = firstName;
     this.lastName = lastName;
     this.gender = gender;
@@ -57,6 +84,7 @@ public class HealthProfile {
 
   /**
    * Calculates the heart rate range which is 50-80% of the person's maximum heart rate.
+   *
    * @return the target heart range.
    */
   public int[] getTargetHeartRateRange() {
@@ -67,7 +95,8 @@ public class HealthProfile {
   }
 
   /**
-   *  Calculates the Body Mass Index.
+   * Calculates the Body Mass Index.
+   *
    * @return the body mass index.
    */
   public double getBMI() {
@@ -80,9 +109,9 @@ public class HealthProfile {
   public void print() {
     int[] range = getTargetHeartRateRange();
     System.out.printf(
-        "%-20s %20s %n%-20s %20s %n%-20s %20s %n%-20s %20s %n%-20s %20.1f %n%-20s %20.1f %n%-20s %20d %n%-20s"
-        + " %20d %n%-20s %20s %n%-20s %20.1f", "First name: ", firstName, "Last name: ", lastName,
-        "Gender: ", gender, "Birth Date: ", dateOfBirth, "Height(in): ", height,
+        "%-20s %20s %n%-20s %20s %n%-20s %20s %n%-20s %20s %n%-20s %20.1f %n%-20s %20.1f %n%-20s "
+        + "%20d %n%-20s %20d %n%-20s %20s %n%-20s %20.1f", "First name: ", firstName, "Last name: ",
+        lastName, "Gender: ", gender, "Birth Date: ", dateOfBirth, "Height(in): ", height,
         "Weight(lbs): ", weight, "Age: ", getAge(), "Max Heart Rate: ", getMaxHeartRate(),
         "Heart Rate Range: ", range[0] + "-" + range[1], "BMI: ", getBMI()
     );
@@ -100,8 +129,13 @@ public class HealthProfile {
 
   /**
    * @param firstName the firstName to set
+   * @throws IllegalArgumentException if the parameter is an empty string.
    */
   public void setFirstName(String firstName) {
+    if(firstName.equals("")) {
+      throw new IllegalArgumentException("Must enter a name.");
+    }
+    
     this.firstName = firstName;
   }
 
@@ -114,8 +148,13 @@ public class HealthProfile {
 
   /**
    * @param lastName the lastName to set
+   * @throws IllegalArgumentException if the parameter is an empty string.
    */
-  public void setLastName(String lastName) {
+  public void setLastName(String lastName) throws IllegalArgumentException {
+    if(lastName.equals("")) {
+      throw new IllegalArgumentException("Must enter a name.");
+    }
+    
     this.lastName = lastName;
   }
 
@@ -142,8 +181,13 @@ public class HealthProfile {
 
   /**
    * @param dateOfBirth the dateOfBirth to set
+   * @throws IllegalArgumentException if the birthdate is before today
    */
-  public void setDateOfBirth(LocalDate dateOfBirth) {
+  public void setDateOfBirth(LocalDate dateOfBirth) throws IllegalArgumentException {
+    if (Period.between(dateOfBirth, LocalDate.now()).isNegative()) {
+      throw new IllegalArgumentException("Birthdate must be on or before today's date.");
+    }
+
     this.dateOfBirth = dateOfBirth;
   }
 
@@ -156,8 +200,13 @@ public class HealthProfile {
 
   /**
    * @param height the height to set
+   * @throws IllegalArgumentException if the height is less than zero.
    */
-  public void setHeight(double height) {
+  public void setHeight(double height) throws IllegalArgumentException {
+    if (height < 0) {
+      throw new IllegalArgumentException("Height must be greater than zero.");
+    }
+
     this.height = height;
   }
 
@@ -170,8 +219,13 @@ public class HealthProfile {
 
   /**
    * @param weight the weight to set
+   * @throws IllegalArgumentException if the weight is less than zero.
    */
-  public void setWeight(double weight) {
+  public void setWeight(double weight) throws IllegalArgumentException {
+    if (weight < 0) {
+      throw new IllegalArgumentException("Weight must be greater than zero");
+    }
+
     this.weight = weight;
   }
 

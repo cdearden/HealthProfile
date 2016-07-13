@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class HealthProfileTest {
 
@@ -19,59 +18,104 @@ public class HealthProfileTest {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-   
-    
     Scanner sc = new Scanner(System.in);
 
+    HealthProfile profile = new HealthProfile();
+    String firstName = "";
     String lastName = "";
     HealthProfile.Gender gender = null;
     LocalDate dateOfBirth = null;
     double height = 0.0d;
     double weight = 0.0d;
+    boolean invalidInput = true;
 
     System.out.println("Please enter patient information: ");
-    System.out.print("First name: ");
-    String firstName = sc.nextLine();
 
-    System.out.print("Last name: ");
-    lastName = sc.nextLine();
+    do {
+      try {
+        System.out.print("First name: ");
+        firstName = sc.nextLine();
+        if(!firstName.trim().matches("[a-zA-Z-']+"))
+          throw new IllegalArgumentException("Invalid name");
+        profile.setFirstName(firstName.trim());
+        invalidInput = false;
+      } catch (IllegalArgumentException e) {
+        System.out.println(e.getMessage());
+      }
+    } while (invalidInput);
 
-    System.out.println("Gender: ");
-    String input = sc.nextLine();
-    if (input.contains("male")) {
-      gender = HealthProfile.Gender.MALE;
-    } else if (input.contains("female")) {
-      gender = HealthProfile.Gender.FEMALE;
-    } else {
-      System.out.println("Invalid input!");
-    } 
+    invalidInput = true;
+    do {
+      try {
+        System.out.print("Last name: ");
+        lastName = sc.nextLine();
+        if(!lastName.trim().matches("[a-zA-Z-']+"))
+          throw new IllegalArgumentException("Invalid name");
+        profile.setLastName(lastName.trim());
+        invalidInput = false;
+      } catch (IllegalArgumentException e) {
+        System.out.println(e.getMessage());
+      }
+    } while (invalidInput);
 
-    System.out.println("Date Of Birth: ");
-    Pattern pattern = Pattern.compile("[0-1]\\d/[0-3]\\d/\\d\\d\\d\\d");
-    try {
-      String date = sc.next(pattern);
-      DateTimeFormatter f = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-      dateOfBirth = LocalDate.parse(date, f);
-    } catch (NoSuchElementException | DateTimeParseException e) {
-      System.out.println("Invalid date!");
-    }
+    invalidInput = true;
+    do {
+      System.out.println("Gender: ");
+      String input = sc.nextLine();
+      if (input.contains("female")) {
+        gender = HealthProfile.Gender.FEMALE;
+        profile.setGender(gender);
+        invalidInput = false;
+      } else if (input.contains("male")) {
+        gender = HealthProfile.Gender.MALE;
+        profile.setGender(gender);
+        invalidInput = false;
+      } else {
+        System.out.println("Invalid input!");
+      }
+    } while (invalidInput);
 
-    System.out.println("Height(in): ");
-    try {
-      height = sc.nextDouble();
-    } catch (NoSuchElementException e) {
-      System.out.println("Invalid input!");
-    }
+    invalidInput = true;
+    do {
+      try {
+        System.out.println("Date Of Birth (MM/DD/YYYY): ");
+        String date = sc.next();
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        dateOfBirth = LocalDate.parse(date, f);
+        profile.setDateOfBirth(dateOfBirth);
+        invalidInput = false;
+      } catch (NoSuchElementException | DateTimeParseException | IllegalArgumentException e) {
+        System.out.println("Invalid date!");
+        sc.nextLine();
+      }
+    } while (invalidInput);
 
-    System.out.println("Weight(lbs): ");
-    try {
-      weight = sc.nextDouble();
-    } catch (NoSuchElementException e) {
-      System.out.println("Invalid input!");
-    }
+    invalidInput = true;
+    do {
+      try {
+        System.out.println("Height(in): ");
+        height = sc.nextDouble();
+        profile.setHeight(height);
+        invalidInput = false;
+      } catch (NoSuchElementException | IllegalArgumentException e) {
+        System.out.println("Invalid input!");
+        sc.nextLine();
+      }
+    } while (invalidInput);
 
-    HealthProfile profile = new HealthProfile(firstName, lastName, gender,
-        dateOfBirth, height, weight);
+    invalidInput = true;
+    do {
+      try {
+
+        System.out.println("Weight(lbs): ");
+        weight = sc.nextDouble();
+        profile.setWeight(weight);
+        invalidInput = false;
+      } catch (NoSuchElementException | IllegalArgumentException e) {
+        System.out.println("Invalid input!");
+        sc.nextLine();
+      }
+    } while (invalidInput);
 
     profile.print();
   }
